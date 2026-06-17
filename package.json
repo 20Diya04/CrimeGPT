@@ -1,0 +1,10 @@
+{
+  "name": "crimegpt-root",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "start": "npm --prefix my-app start",
+    "build": "npm --prefix my-app run build",
+    "test": "npm --prefix my-app test"
+  }
+}
