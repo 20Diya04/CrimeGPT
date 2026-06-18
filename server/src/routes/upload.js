@@ -1,16 +1,25 @@
-const express = require('express');
-const multer = require('multer');
-const path = require('path');
-const fs = require('fs');
-const { generateHash } = require('../utils/hash');
-const Evidence = require('../models/Evidence');
-const Case = require('../models/Case');
-const authenticate = require('../middleware/auth');
-const ActivityLog = require('../models/ActivityLog');
+import express from 'express';
+import multer from 'multer';
+import path from 'path';
+import fs from 'fs';
+import { fileURLToPath } from 'url';
+
+import { generateHash } from '../utils/hash.js';
+import Evidence from '../models/Evidence.js';
+import Case from '../models/Case.js';
+import authenticate from '../middleware/auth.js';
+import ActivityLog from '../models/ActivityLog.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const router = express.Router();
+
 const uploadPath = path.join(__dirname, '../../uploads');
-if (!fs.existsSync(uploadPath)) fs.mkdirSync(uploadPath, { recursive: true });
+
+if (!fs.existsSync(uploadPath)) {
+  fs.mkdirSync(uploadPath, { recursive: true });
+}
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, uploadPath),
@@ -42,4 +51,4 @@ router.post('/:caseId', authenticate, upload.single('evidence'), async (req, res
   res.json(evidence);
 });
 
-module.exports = router;
+export default router;

@@ -6,4 +6,4 @@ const permit = (...allowedRoles) => (req, res, next) => {
   next();
 };
 
-module.exports = permit;
+export default permit;

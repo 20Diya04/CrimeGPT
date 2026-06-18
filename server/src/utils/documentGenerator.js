@@ -1,6 +1,6 @@
-const { Document, Packer, Paragraph, TextRun } = require('docx');
-const PDFDocument = require('pdfkit');
-const stream = require('stream');
+import { Document, Packer, Paragraph, TextRun } from 'docx';
+import PDFDocument from 'pdfkit';
+import stream from 'stream';
 
 const buildDocumentText = ({ type, caseRecord }) => {
   const header = `GOVERNMENT OF INDIA - MINISTRY OF HOME AFFAIRS\n${type.toUpperCase()}\n`;
@@ -8,7 +8,7 @@ const buildDocumentText = ({ type, caseRecord }) => {
   return `${header}\n${body}`;
 };
 
-const generatePDF = (type, caseRecord) => {
+export const generatePDF = (type, caseRecord) => {
   const doc = new PDFDocument({ margin: 36 });
   const bufferChunks = [];
   doc.on('data', (chunk) => bufferChunks.push(chunk));
@@ -20,7 +20,7 @@ const generatePDF = (type, caseRecord) => {
   });
 };
 
-const generateDOCX = async (type, caseRecord) => {
+export const generateDOCX = async (type, caseRecord) => {
   const doc = new Document({
     sections: [
       {
@@ -39,4 +39,4 @@ const generateDOCX = async (type, caseRecord) => {
   return buffer;
 };
 
-module.exports = { generatePDF, generateDOCX };
+export default { generatePDF, generateDOCX };

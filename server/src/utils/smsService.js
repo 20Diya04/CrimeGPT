@@ -7,9 +7,6 @@ const TWILIO_NO = process.env.TWILIO_NO;
 const ACCOUNT_SID = process.env.ACCOUNT_SID;
 const AUTH_TOKEN = process.env.AUTH_TOKEN;
 
-console.log("ACCOUNT_SID:", process.env.ACCOUNT_SID);
-console.log("AUTH_TOKEN:", process.env.AUTH_TOKEN ? "Loaded" : "Missing");
-console.log("TWILIO_NO:", process.env.TWILIO_NO);
 
 const client = new twilio(ACCOUNT_SID, AUTH_TOKEN);
 

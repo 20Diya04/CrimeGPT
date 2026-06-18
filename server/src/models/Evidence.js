@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const EvidenceSchema = new mongoose.Schema({
   caseId: { type: mongoose.Schema.Types.ObjectId, ref: 'Case', required: true },
@@ -14,4 +14,4 @@ const EvidenceSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now },
 });
 
-module.exports = mongoose.model('Evidence', EvidenceSchema);
+export default mongoose.model('Evidence', EvidenceSchema);
