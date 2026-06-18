@@ -1,8 +1,9 @@
-const express = require('express');
-const Case = require('../models/Case');
-const { generatePDF, generateDOCX } = require('../utils/documentGenerator');
-const authenticate = require('../middleware/auth');
-const ActivityLog = require('../models/ActivityLog');
+import express from 'express';
+
+import Case from '../models/Case.js';
+import { generatePDF, generateDOCX } from '../utils/documentGenerator.js';
+import authenticate from '../middleware/auth.js';
+import ActivityLog from '../models/ActivityLog.js';
 
 const router = express.Router();
 
@@ -35,4 +36,4 @@ router.post('/generate', async (req, res) => {
   res.send(buffer);
 });
 
-module.exports = router;
+export default router;

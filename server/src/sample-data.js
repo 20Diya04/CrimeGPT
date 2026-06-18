@@ -1,7 +1,9 @@
-require('dotenv').config();
-const connectDB = require('./config/db');
-const User = require('./models/User');
-const Case = require('./models/Case');
+import dotenv from 'dotenv';
+import mongoose from 'mongoose';
+import connectDB from './config/db.js';
+import User from './models/User.js';
+import Case from './models/Case.js';
+
 
 const seed = async () => {
   await connectDB();

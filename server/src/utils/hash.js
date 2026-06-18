@@ -1,7 +1,5 @@
-const crypto = require('crypto');
+import crypto from 'crypto';
 
-const generateHash = (payload) => {
+export const generateHash = (payload) => {
   return crypto.createHash('sha256').update(payload).digest('hex');
 };
-
-module.exports = { generateHash };

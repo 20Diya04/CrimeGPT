@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const WitnessSchema = new mongoose.Schema({
   name: String,
@@ -63,4 +63,4 @@ const CaseSchema = new mongoose.Schema({
   updatedAt: { type: Date, default: Date.now },
 });
 
-module.exports = mongoose.model('Case', CaseSchema);
+export default mongoose.model('Case', CaseSchema);

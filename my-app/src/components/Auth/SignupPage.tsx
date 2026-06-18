@@ -1,11 +1,12 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { data, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useLang } from '../../contexts/LangContext';
 import { Ic } from '../../utils/icons';
 import Header from '../Layout/Header';
 import Footer from '../Layout/Footer';
 import LangModal from '../common/LangModal';
+import axios from "axios";
 
 export default function SignupPage() {
   const [form, setForm] = useState({ firstName: '', lastName: '', email: '', phone: '', password: '', confirm: '' });
@@ -16,9 +17,14 @@ export default function SignupPage() {
   const [info, setInfo] = useState('');
   const [loading, setLoading] = useState(false);
   const [sending, setSending] = useState(false);
-  const { signup, sendOtp, verifyOtp } = useAuth();
+  const { signup } = useAuth();
   const { t } = useLang();
   const nav = useNavigate();
+
+
+  const REACT_APP_API_URL = process.env.REACT_APP_API_URL
+  // console.log("API URL:", REACT_APP_API_URL);
+
 
   const handleOtp = (i: number, v: string) => {
     if (!/^[0-9]?$/.test(v)) return;
@@ -29,31 +35,50 @@ export default function SignupPage() {
   };
 
   const doSend = async () => {
-    if (form.phone.length < 10) {
-      setErr('Enter a valid 10-digit mobile number');
-      return;
+    try {
+      setSending(true);
+
+      const { data } = await axios.post(
+        `${REACT_APP_API_URL}/User/send-otp`,
+        {
+          phone: form.phone,
+        }
+      );
+
+      if (data.success) {
+        setOtpSent(true);
+        setInfo(data.message);
+      }
+    } catch (error: any) {
+      setErr(
+        error.response?.data?.message ||
+        "Failed to send OTP"
+      );
+    } finally {
+      setSending(false);
     }
-    setErr('');
-    setSending(true);
-    const r = await sendOtp(form.phone);
-    setSending(false);
-    if (r.ok) {
-      setOtpSent(true);
-      setInfo(r.msg);
-    } else setErr(r.msg);
   };
 
-  const doVerify = () => {
-    const entered = otp.join('');
-    if (entered.length < 6) {
-      setErr('Enter all 6 OTP digits');
-      return;
-    }
-    if (verifyOtp(form.phone, entered)) {
+
+  const doVerify = async () => {
+    const enteredOtp = otp.join("");
+
+    const response = await axios.post(
+      `${REACT_APP_API_URL}/User/verify-otp`,
+      {
+        phone: form.phone,
+        otp: enteredOtp
+      }
+    );
+
+    const data = response.data;
+
+    if (data.success) {
       setOtpOk(true);
-      setErr('');
-      setInfo('Mobile verified ✓');
-    } else setErr('Incorrect OTP. Try again.');
+      setInfo("Mobile verified");
+    } else {
+      setErr(data.message);
+    }
   };
 
   const submit = async (e: React.FormEvent) => {
@@ -71,13 +96,16 @@ export default function SignupPage() {
       return;
     }
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 400));
-    const ok = signup(form);
-    setLoading(false);
-    if (ok) {
+    const response = await axios.post(
+      `${REACT_APP_API_URL}/User/register`, form
+    );
+
+    if (response.data.success) {
       alert('Account created! Please login.');
       nav('/login');
-    } else setErr('An account with this email or phone already exists.');
+    } else {
+      setErr(response.data.message || 'Registration failed');
+    }
   };
 
   return (

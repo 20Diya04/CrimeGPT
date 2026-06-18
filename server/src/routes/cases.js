@@ -1,8 +1,9 @@
-const express = require('express');
-const Case = require('../models/Case');
-const ActivityLog = require('../models/ActivityLog');
-const authenticate = require('../middleware/auth');
-const permit = require('../middleware/roles');
+import express from 'express';
+
+import Case from '../models/Case.js';
+import ActivityLog from '../models/ActivityLog.js';
+import authenticate from '../middleware/auth.js';
+import permit from '../middleware/roles.js';
 
 const router = express.Router();
 
@@ -71,4 +72,4 @@ router.get('/:id/analysis', async (req, res) => {
   res.json({ sections: suggestions, judgments: ['Sample State v. Case (2025)'], crossReferences: ['CrPC 154', 'Evidence Act 65B'] });
 });
 
-module.exports = router;
+export default router;
