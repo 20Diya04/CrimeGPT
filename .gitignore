@@ -1,0 +1,34 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Testing
+coverage/
+
+# Environment files
+.env
+**/.env
+
+# Production builds
+build/
+dist/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# React build
+my-app/build/
+
+# Optional uploads ignore
+# server/uploads/*
+# !server/uploads/.gitkeep
+
+# PnP
+.pnp
+.pnp.js
