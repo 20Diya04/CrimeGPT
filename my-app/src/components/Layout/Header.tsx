@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useLang } from '../../contexts/LangContext';
 import { Ic } from '../../utils/icons';
+import { useEffect } from 'react';
 
 interface HeaderProps {
   nav?: string;
@@ -9,9 +10,14 @@ interface HeaderProps {
 }
 
 export default function Header({ nav: tab, onNav }: HeaderProps) {
-  const { logout, user } = useAuth();
+  const { logout, user, login } = useAuth();
   const { lang, setShowLangModal, t } = useLang();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    login();
+  }, []);
+
 
   const langLabel = lang === 'en' ? 'English' : lang === 'hi' ? 'हिन्दी' : 'ગુજરાતી';
   const navLabels: Record<string, string> = {
@@ -24,6 +30,12 @@ export default function Header({ nav: tab, onNav }: HeaderProps) {
   const initials = user
     ? `${user.firstName?.[0] || ''}${user.lastName?.[0] || ''}`.toUpperCase()
     : '';
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
+
 
   return (
     <>
@@ -88,10 +100,7 @@ export default function Header({ nav: tab, onNav }: HeaderProps) {
           {user && (
             <button
               className="hbtn danger"
-              onClick={() => {
-                logout();
-                navigate('/login');
-              }}
+              onClick={handleLogout}
             >
               <Ic.LogOut /> Logout
             </button>

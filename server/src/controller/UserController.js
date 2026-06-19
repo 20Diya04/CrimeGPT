@@ -164,6 +164,38 @@ export const sendOtpController = async (req, res) => {
 
 
 
+export const getUserDataById = async (req, res) => {
+  try {
+    const user = await User
+      .findById(req.params.id)
+
+    if (!user) {
+      return res.status(404).json({
+        status: 0,
+        message: "User not found",
+      });
+    }
+
+    res.status(200).json({
+      status: 1,
+      message: "User data fetched successfully",
+      data: user,
+    });
+  } catch (error) {
+    if (error.name === "CastError") {
+      return res.status(400).json({
+        status: 0,
+        message: "Invalid user ID",
+      });
+    }
+
+    console.error(error);
+    res.status(500).json({
+      status: 0,
+      message: "Server error",
+    });
+  }
+};
 
 
 
