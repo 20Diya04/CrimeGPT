@@ -18,6 +18,7 @@ export default function Header({ nav: tab, onNav }: HeaderProps) {
     login();
   }, []);
 
+
   const langLabel = lang === 'en' ? 'English' : lang === 'hi' ? 'हिन्दी' : 'ગુજરાતી';
   const navLabels: Record<string, string> = {
     dashboard: t('dashboard'),

@@ -1,6 +1,8 @@
 import axios from 'axios';
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 import { jwtDecode } from 'jwt-decode';
+import { useNavigate } from 'react-router-dom';
+
 
 interface AuthContextValue {
   user: any;
@@ -65,6 +67,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     try {
+
       const decoded = jwtDecode<JwtPayload>(token);
 
       const response = await axios.get(
