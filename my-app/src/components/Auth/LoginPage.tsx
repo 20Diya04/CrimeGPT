@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../contexts/AuthContext';
 import { useLang } from '../../contexts/LangContext';
 import { Ic } from '../../utils/icons';
 import Header from '../Layout/Header';
 import Footer from '../Layout/Footer';
 import LangModal from '../common/LangModal';
+import axios from 'axios';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -13,19 +13,47 @@ export default function LoginPage() {
   const [showPw, setShowPw] = useState(false);
   const [err, setErr] = useState('');
   const [loading, setLoading] = useState(false);
-  const { login } = useAuth();
   const { t } = useLang();
   const nav = useNavigate();
 
+  const REACT_APP_API_URL = process.env.REACT_APP_API_URL;
+
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-    await new Promise((r) => setTimeout(r, 500));
-    const ok = login(email, pw);
-    setLoading(false);
-    ok ? nav('/dashboard') : setErr('Invalid credentials. Use demo@police.gov.in / 123456');
-  };
 
+    try {
+      setLoading(true);
+      setErr('');
+
+      const response = await axios.post(
+        `${REACT_APP_API_URL}/User/login`,
+        {
+          email,
+          password: pw,
+        }
+      );
+
+      if (response.data.status === 1) {
+        localStorage.setItem(
+          'token',
+          response.data.data.token
+        );
+        nav('/dashboard');
+      } else {
+        setErr(response.data.message);
+      }
+    } catch (error: any) {
+      console.error(error);
+
+      if (error.response?.status === 401) {
+        setErr('Invalid credentials');
+      } else {
+        setErr('Login failed');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <div className="page">
       <Header />
