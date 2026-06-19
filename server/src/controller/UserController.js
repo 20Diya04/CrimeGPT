@@ -2,6 +2,7 @@ import User from "../models/User.js";
 import bcrypt from "bcrypt";
 import { otpStore } from "../utils/otpStore.js";
 import { sendOTP } from "../utils/smsService.js";
+import { generateToken } from "../utils/jwtUtils.js";
 
 export const registerUser = async (req, res) => {
   try {
@@ -160,3 +161,72 @@ export const sendOtpController = async (req, res) => {
     });
   }
 };
+
+
+
+
+
+
+export const Login = async (req, res) => {
+  try {
+    const email = req.body.email;
+    const password = req.body.password;
+
+    const userData = await User.findOne({ email: email })
+
+    if (!email) {
+      return res.status(400).json({
+        status: 0,
+        message: "Email is required",
+        error: "Email is required"
+      })
+    }
+
+    if (!password) {
+      return res.status(200).json({
+        status: 0,
+        message: "Password is required",
+        error: "Password is required"
+      })
+    }
+
+    if (!userData) {
+      return res.status(400).json({
+        status: 0,
+        message: "User not found",
+        error: "User not found"
+      })
+    }
+
+    const Match = await bcrypt.compare(password, userData.password)
+
+    if (!Match) {
+      return res.status(401).json({
+        status: 0,
+        message: "Invalid password",
+        error: "Invalid password"
+      })
+    }
+
+
+    const token = generateToken(userData);
+    return res.status(200).json({
+      status: 1,
+      message: "Login Done ",
+      data: {
+        _id: userData._id,
+        email: userData.email,
+        role: userData.role,
+        token: token
+      }
+    })
+  } catch (error) {
+    console.log(error)
+    return res.status(500).json({
+      status: 0,
+      message: "Internal Server Error", 
+      error: error.message
+    })
+  }
+
+}
